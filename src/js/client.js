@@ -49,7 +49,9 @@ var postController = new PostController();
 var postCollection = new PostCollection();
 var viewController = new ViewController();
 var Helper = new Helper();
-// var order = '';
+var limit = 5;
+const BASE_API_URL = 'http://dcodeit.net/dmitry.kalenyuk/projects/rest-api-codeit/public/posts';
+const FAKER_URL = 'http://dcodeit.net/dmitry.kalenyuk/practice/faker/';
 
 postController.getPosts();
 
@@ -73,9 +75,6 @@ postController.getPosts();
 })(jQuery);
 
 function PostController() {
-    const BASE_API_URL = 'http://dcodeit.net/dmitry.kalenyuk/projects/rest-api-codeit/public/posts';
-    const FAKER_URL = 'http://dcodeit.net/dmitry.kalenyuk/practice/faker/';
-    this.limit = 5;
 
     this.generate = function () {
         $.ajax({
@@ -94,7 +93,7 @@ function PostController() {
 
     this.getPosts = function () {
         $.ajax({
-            url: BASE_API_URL + '?limit=' + this.limit,
+            url: BASE_API_URL + '?limit=' + limit,
             type: 'GET',
             success: function (result) {
                 postCollection.setPosts(result);
@@ -194,7 +193,6 @@ $(document).on('click', '.delBtn', function () {
 $(document).on('click', '.editBtn', function () {
     var id = $(this).closest("tr").data('id');
     var post = postCollection.getPostById(id);
-    console.log(post);
     $('#title').val(post.title);
     $('#content').val(post.content);
     $('#author').val(post.author);
@@ -213,18 +211,39 @@ $('.btnGenerate').on('click', function () {
 $('.glyphicon-sort-by-attributes').on('click', function () {
     $('.glyphicon').removeClass("glyphicon-active");
     $(this).addClass("glyphicon-active");
-
+    $('.btnMore').html('More').prop("disabled", false);
+    var column = $(this).closest('th').data('sort');
     postCollection.clearPosts();
-    postController.getPosts();
+    $.ajax({
+        url: BASE_API_URL + '?column=' + column + '&option=ASC&limit=' + limit,
+        type: 'GET',
+        success: function (result) {
+            postCollection.setPosts(result);
+        },
+        error: function (xhr, resp, text) {
+            $('.btnMore').html('Thats All').prop("disabled", true);
+        }
+    })
 });
 
 $('.glyphicon-sort-by-attributes-alt').on('click', function () {
     $('.glyphicon').removeClass("glyphicon-active");
     $(this).addClass("glyphicon-active");
     $('.btnMore').html('More').prop("disabled", false);
-
+    var column = $(this).closest('th').data('sort');
     postCollection.clearPosts();
-    postController.getPosts();
+    $.ajax({
+        url: BASE_API_URL + '?column=' + column + '&option=DESC&limit=' + limit,
+        type: 'GET',
+        success: function (result) {
+            postCollection.setPosts(result);
+        },
+        error: function (xhr, resp, text) {
+            $('.btnMore').html('Thats All').prop("disabled", true);
+        }
+    })
+
+
 });
 
 function ViewController() {
@@ -243,11 +262,11 @@ function ViewController() {
                 '<td>' + posts[i].author + '</td>' +
                 '<td class="text-center">' +
 
-                    //button for edit action
+                //button for edit action
                 '<button class="btn btn-info btn-xs editBtn ">' +
                 '<span class="glyphicon glyphicon-edit"></span></button>' +
 
-                    // button for delete action
+                // button for delete action
                 '<button class="btn btn-danger btn-xs delBtn ">' +
                 '<span class="glyphicon glyphicon-remove-sign">' +
                 '</span></button></td></tr>'
@@ -270,7 +289,7 @@ function Post(id, title, content, author, created_at) {
 function Helper() {
 
     this.lazyLoad = function () {
-        postController.limit += 5;
+        limit += 5;
         postCollection.clearPosts();
         postController.getPosts();
     };
