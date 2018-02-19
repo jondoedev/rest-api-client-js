@@ -9,7 +9,7 @@ PostCollection.prototype.getAllPosts = function () {
 PostCollection.prototype.setPosts = function (postsList) {
     var length = postsList.length;
     for (var i = 0; i < length; i++) {
-        var post = new Post(postsList[i].id, postsList[i].title, postsList[i].content, postsList[i].author, postsList[i].created_at);
+        var post = new Post(postsList[i].id, postsList[i].title, postsList[i].content, postsList[i].author, postsList[i].unix_created_at);
         this.posts.push(post);
     }
     viewController.setTablePosts();
@@ -242,8 +242,6 @@ $('.glyphicon-sort-by-attributes-alt').on('click', function () {
             $('.btnMore').html('Thats All').prop("disabled", true);
         }
     })
-
-
 });
 
 function ViewController() {
@@ -256,7 +254,7 @@ function ViewController() {
         for (var i = 0; i < length; i++) {
             $('#postsTable tbody').append(
                 '<tr data-id=' + posts[i].id + '>' +
-                '<td class="date">' + moment().from(posts[i].date) + '</td>' +
+                '<td class="date">' + Helper.timeDiff(posts[i].date) + '</td>' +
                 '<td>' + posts[i].title + '</td>' +
                 '<td>' + posts[i].content + '</td>' +
                 '<td>' + posts[i].author + '</td>' +
@@ -278,23 +276,30 @@ function ViewController() {
 
 }
 
-function Post(id, title, content, author, created_at) {
+function Post(id, title, content, author, unix_created_at) {
     this.id = id;
     this.title = title;
     this.content = content;
     this.author = author;
-    this.date = created_at;
+    this.date = unix_created_at;
 }
 
 function Helper() {
 
     this.lazyLoad = function () {
+        $('.glyphicon').removeClass("glyphicon-active");
         limit += 5;
         postCollection.clearPosts();
         postController.getPosts();
     };
 
-    this.timeUpdate = function () {
-
+    this.timeDiff = function (date) {
+        return moment().from(date * 1000)
     };
 }
+
+// setInterval(function () {
+//     var post = Post;
+//     Helper.timeDiff(post.date)
+//     console.log('s','s')
+// }, 1000);
