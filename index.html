@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Rest Client</title>
+    <link rel="stylesheet" href="src/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-light bg-success header">
+        <h1 class="mb-0 text-capitalize text-center"><a href="">Client for REST API with JS</a></h1>
+    </nav>
+</header>
+<div class="container main-content">
+    <div class="row col-md-8 col-md-offset-2">
+        <a href="#" class="btn btn-primary" id="addPostBtn" data-toggle="modal"
+           data-target="#postFormModal"><span class="glyphicon-plus"></span></a>
+        <button class="btn btn-success btnMore">More <span class="glyphicon glyphicon-download"></span></button>
+        <button class="btn btn-warning btnGenerate pull-right">Generate Data<span
+                class="glyphicon glyphicon-flash"></span></button>
+        <div></div>
+            <table class="table table-bordered lazyLoad" id="postsTable">
+                <thead>
+                <tr>
+                    <th data-sort="creation_date" class="text-center">
+                        <span class="glyphicon glyphicon-sort-by-attributes-alt pull-right" aria-hidden="true"></span>
+                        Created at
+                        <span class="glyphicon glyphicon-sort-by-attributes pull-left" aria-hidden="true"></span>
+                    </th>
+                    <th data-sort="title" class="text-center">
+                        <span class="glyphicon glyphicon-sort-by-attributes-alt pull-right" aria-hidden="true"></span>
+                        Title
+                        <span class="glyphicon glyphicon-sort-by-attributes pull-left" aria-hidden="true"></span>
+                    </th>
+                    <th data-sort="content" class="text-center">
+                        Content
+                        <span class="glyphicon glyphicon-sort-by-attributes-alt pull-right" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-sort-by-attributes pull-left" aria-hidden="true"></span>
+                    </th>
+                    <th data-sort="author" class="text-center">
+                        Author
+                        <span class="glyphicon glyphicon-sort-by-attributes-alt pull-right" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-sort-by-attributes pull-left" aria-hidden="true"></span>
+                    </th>
+                    <th class="text-center"><span class="glyphicon glyphicon-cog"></span></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="postFormModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="postForm" data-id="0">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" name="title" id="title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="content">Content</label>
+                        <input type="text" name="content" id="content" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="content">Author</label>
+                        <input type="text" name="author" id="author" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-success center-block">Apply</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="src/jquery/dist/jquery.min.js"></script>
+<script src="src/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="src/js/client.js"></script>
+<script src="src/js/moment.js"></script>
+</body>
+</html>

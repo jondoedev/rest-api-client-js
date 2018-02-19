@@ -1,0 +1,83 @@
+.modal.fade .modal-dialog {
+    -webkit-transform: scale(0.1);
+    -moz-transform: scale(0.1);
+    -ms-transform: scale(0.1);
+    transform: scale(0.1);
+    top: 300px;
+    opacity: 0;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    transition: all 0.5s;
+}
+
+.modal.fade.in .modal-dialog {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform: translate3d(0, -300px, 0);
+    transform: translate3d(0, -300px, 0);
+    opacity: 1;
+}
+
+.modal{
+    background-color: rgba(230, 224, 219, 0.73)
+}
+
+.modal-body {
+    background-color: rgba(50,116,164, 0.6);
+}
+
+body {
+    background-image: url('../../img/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+
+}
+
+span {
+    cursor: pointer;
+}
+
+.table.table-bordered {
+    background-color: rgba(230, 224, 219, 0.73)
+}
+
+.btnMore {
+    margin: 0 auto;
+}
+
+.glyphicon-active {
+    color: #3274a4;
+    pointer-events: none;
+}
+
+/*TEST*/
+
+asdf {
+    display: none;
+    padding: 10px;
+    border-width: 0 1px 1px 0;
+    border-style: solid;
+    border-color: #fff;
+}
+
+.main-content {
+    width: 100%;
+    height: auto;
+}
+
+
+.header{
+    background-color: rgba(230, 224, 219, 0.73);
+    height: 113px;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
+}
+
+
+
+
