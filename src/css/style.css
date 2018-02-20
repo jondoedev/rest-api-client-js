@@ -20,12 +20,12 @@
     opacity: 1;
 }
 
-.modal{
+.modal {
     background-color: rgba(230, 224, 219, 0.73)
 }
 
 .modal-body {
-    background-color: rgba(50,116,164, 0.6);
+    background-color: rgba(50, 116, 164, 0.6);
 }
 
 body {
@@ -45,6 +45,40 @@ span {
     background-color: rgba(230, 224, 219, 0.73)
 }
 
+table {
+    width: 100%;
+}
+
+thead, tbody, tr, td, th {
+    display: block;
+}
+
+tr:after {
+    content: '     ';
+    display: grid;
+    clear: both;
+}
+
+thead th {
+    height: auto;
+    width: auto;
+
+}
+
+tbody {
+    height: 420px;
+    overflow-y: auto;
+}
+
+tbody td, thead th {
+    width: 20%;
+    float: left;
+}
+
+tbody tr {
+width: auto;
+}
+
 .btnMore {
     margin: 0 auto;
 }
@@ -54,23 +88,25 @@ span {
     pointer-events: none;
 }
 
-/*TEST*/
-
-asdf {
-    display: none;
-    padding: 10px;
-    border-width: 0 1px 1px 0;
-    border-style: solid;
-    border-color: #fff;
-}
-
 .main-content {
     width: 100%;
     height: auto;
 }
 
+.controll-btns {
+    padding-top: 15px;
+    padding-right: 15px;
+    padding-left: 15px;
 
-.header{
+    text-align: center
+}
+
+.table-footer {
+    background-color: rgba(230, 224, 219, 0.73);
+    height: 60px;
+}
+
+.header {
     background-color: rgba(230, 224, 219, 0.73);
     height: 113px;
     padding: 15px 15px;
@@ -79,5 +115,19 @@ asdf {
 }
 
 
-
+.table-fixed thead {
+    width: 100%;
+}
+.table-fixed tbody {
+    height: 400px;
+    overflow-y: scroll;
+    width: 100%;
+}
+.table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+    display: block;
+}
+.table-fixed tbody td, .table-fixed thead > tr> th {
+    float: revert;
+    border-bottom-width: 0;
+}
 

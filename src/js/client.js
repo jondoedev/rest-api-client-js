@@ -1,3 +1,18 @@
+/* Creating the Post entity
+ * ########################################################################################### */
+function Post(id, title, content, author, unix_created_at) {
+    this.id = id;
+    this.title = title;
+    this.content = content;
+    this.author = author;
+    this.date = unix_created_at;
+}
+/*End Post Entity code
+ * ###########################################################################################  */
+
+
+/* Creating Post Collection
+ * ########################################################################################### */
 function PostCollection() {
     this.posts = [];
 }
@@ -45,51 +60,16 @@ PostCollection.prototype.deletePost = function (id) {
         return post.id != id;
     });
 };
-var postController = new PostController();
-var postCollection = new PostCollection();
-var viewController = new ViewController();
-var Helper = new Helper();
-var limit = 5;
-const BASE_API_URL = 'http://dcodeit.net/dmitry.kalenyuk/projects/rest-api-codeit/public/posts';
-const FAKER_URL = 'http://dcodeit.net/dmitry.kalenyuk/practice/faker/';
+/* End PostCollection Code
+ * ########################################################################################### */
 
-postController.getPosts();
 
-(function ($) {
-    $.fn.serializeFormJSON = function () {
 
-        var o = {};
-        var a = this.serializeArray();
-        $.each(a, function () {
-            if (o[this.name]) {
-                if (!o[this.name].push) {
-                    o[this.name] = [o[this.name]];
-                }
-                o[this.name].push(this.value || '');
-            } else {
-                o[this.name] = this.value || '';
-            }
-        });
-        return o;
-    };
-})(jQuery);
 
+
+/* PostController Code
+ * ########################################################################################### */
 function PostController() {
-
-    this.generate = function () {
-        $.ajax({
-            url: FAKER_URL,
-            type: 'GET',
-            success: function () {
-                postCollection.clearPosts();
-                postController.getPosts();
-                alert('New Data was generated via Faker!')
-            },
-            error: function () {
-                alert('an error occurred while generating data')
-            }
-        })
-    };
 
     this.getPosts = function () {
         $.ajax({
@@ -173,23 +153,32 @@ function PostController() {
     }
 }
 
-$('#postForm').on('submit', function (e) {
-    e.preventDefault();
+/* End PostController Code
+ * ########################################################################################### */
 
+
+
+/* Event Listeners
+ * ########################################################################################### */
+
+$('#postForm').on('submit', function (event) {
+    event.preventDefault();
     var id = parseInt($(this).data('id'));
     if (id === 0) {
-        postController.addPost($(this).serializeFormJSON());
+        postController.addPost($(this).formSerialize());
     } else {
-        postController.updatePost(id, $(this).serializeFormJSON());
+        postController.updatePost(id, $(this).formSerialize());
         $(this).data('id', 0);
     }
 });
 
+    //delete event listener
 $(document).on('click', '.delBtn', function () {
     var id = $(this).closest("tr").data('id');
     postController.deletePost(id);
 });
 
+    //edit event listener
 $(document).on('click', '.editBtn', function () {
     var id = $(this).closest("tr").data('id');
     var post = postCollection.getPostById(id);
@@ -200,50 +189,50 @@ $(document).on('click', '.editBtn', function () {
     $('#postFormModal').modal('show');
 });
 
+
+    //lazy load event listener
 $('.btnMore').on('click', function () {
     Helper.lazyLoad();
 });
 
+    //generate data via PHP Faker
 $('.btnGenerate').on('click', function () {
-    postController.generate();
+    Helper.generatePosts();
 });
 
+    //Sort ASC event listener
 $('.glyphicon-sort-by-attributes').on('click', function () {
+    var column = $(this).closest('th').data('sort');
     $('.glyphicon').removeClass("glyphicon-active");
     $(this).addClass("glyphicon-active");
-    $('.btnMore').html('More').prop("disabled", false);
-    var column = $(this).closest('th').data('sort');
-    postCollection.clearPosts();
-    $.ajax({
-        url: BASE_API_URL + '?column=' + column + '&option=ASC&limit=' + limit,
-        type: 'GET',
-        success: function (result) {
-            postCollection.setPosts(result);
-        },
-        error: function (xhr, resp, text) {
-            $('.btnMore').html('Thats All').prop("disabled", true);
-        }
-    })
+    $('.btnMore').html('More span').hide();
+    $('.btnMoreSorted').html('More <span class="glyphicon glyphicon-download"></span>').removeClass('hidden');
+    $('.btnMoreSorted').on('click', function () {
+        limit += 5;
+        Helper.sortASC(column);
+    });
+    Helper.sortASC(column);
 });
 
+    //Sort DESC event listener
 $('.glyphicon-sort-by-attributes-alt').on('click', function () {
+    var column = $(this).closest('th').data('sort');
     $('.glyphicon').removeClass("glyphicon-active");
     $(this).addClass("glyphicon-active");
-    $('.btnMore').html('More').prop("disabled", false);
-    var column = $(this).closest('th').data('sort');
-    postCollection.clearPosts();
-    $.ajax({
-        url: BASE_API_URL + '?column=' + column + '&option=DESC&limit=' + limit,
-        type: 'GET',
-        success: function (result) {
-            postCollection.setPosts(result);
-        },
-        error: function (xhr, resp, text) {
-            $('.btnMore').html('Thats All').prop("disabled", true);
-        }
-    })
+    $('.btnMore').html('More').hide();
+    $('.btnMoreSorted').html('More <span class="glyphicon glyphicon-download"></span>').removeClass('hidden');
+    $('.btnMoreSorted').on('click', function () {
+        limit += 5;
+        Helper.sortDESC(column);
+    });
+    Helper.sortDESC(column);
 });
+/* End Event Listeners
+ * ########################################################################################### */
 
+
+/* ViewController Code
+ * ########################################################################################### */
 function ViewController() {
     this.setTablePosts = function () {
         var posts = postCollection.getAllPosts();
@@ -258,7 +247,7 @@ function ViewController() {
                 '<td>' + posts[i].title + '</td>' +
                 '<td>' + posts[i].content + '</td>' +
                 '<td>' + posts[i].author + '</td>' +
-                '<td class="text-center">' +
+                '<td class="text-center cell-option">' +
 
                 //button for edit action
                 '<button class="btn btn-info btn-xs editBtn ">' +
@@ -270,21 +259,48 @@ function ViewController() {
                 '</span></button></td></tr>'
             );
         }
-
     };
-
-
 }
+/* End ViewController Code
+ * ########################################################################################### */
 
-function Post(id, title, content, author, unix_created_at) {
-    this.id = id;
-    this.title = title;
-    this.content = content;
-    this.author = author;
-    this.date = unix_created_at;
-}
 
+
+/* Helpers Code
+ * ########################################################################################### */
 function Helper() {
+    this.formSerialize = function ($) {
+        $.fn.formSerialize = function () {
+            var serialized = {};
+            var array = this.serializeArray();
+            $.each(array, function () {
+                if (serialized[this.name]) {
+                    if (!serialized[this.name].push) {
+                        serialized[this.name] = [serialized[this.name]];
+                    }
+                    serialized[this.name].push(this.value || '');
+                } else {
+                    serialized[this.name] = this.value || '';
+                }
+            });
+            return serialized;
+        };
+    }(jQuery);
+
+    this.generatePosts = function () {
+        $.ajax({
+            url: FAKER_URL,
+            type: 'GET',
+            success: function () {
+                postCollection.clearPosts();
+                postController.getPosts();
+                alert('20 new data items was generated via Faker!')
+            },
+            error: function () {
+                alert('an error occurred while generating data')
+            }
+        })
+    };
 
     this.lazyLoad = function () {
         $('.glyphicon').removeClass("glyphicon-active");
@@ -296,10 +312,47 @@ function Helper() {
     this.timeDiff = function (date) {
         return moment().from(date * 1000)
     };
-}
 
-// setInterval(function () {
-//     var post = Post;
-//     Helper.timeDiff(post.date)
-//     console.log('s','s')
-// }, 1000);
+
+    this.sortASC = function (column) {
+        postCollection.clearPosts();
+        $.ajax({
+            url: BASE_API_URL + '?column=' + column + '&option=ASC&limit=' + limit,
+            type: 'GET',
+            success: function (result) {
+                postCollection.setPosts(result);
+            },
+            error: function (xhr, resp, text) {
+                $('.btnMore').html('Thats All').prop("disabled", true);
+            }
+        })
+    };
+
+    this.sortDESC = function (column) {
+        postCollection.clearPosts();
+        $.ajax({
+            url: BASE_API_URL + '?column=' + column + '&option=DESC&limit=' + limit,
+            type: 'GET',
+            success: function (result) {
+                postCollection.setPosts(result);
+            },
+            error: function (xhr, resp, text) {
+                $('.btnMore').html('Thats All').prop("disabled", true);
+            }
+        })
+    }
+}
+/* End Helpers Code
+ * ########################################################################################### */
+
+
+
+var postController = new PostController();
+var postCollection = new PostCollection();
+var viewController = new ViewController();
+var Helper = new Helper();
+var limit = 10;
+const BASE_API_URL = 'http://dcodeit.net/dmitry.kalenyuk/projects/rest-api-codeit/public/posts';
+const FAKER_URL = 'http://dcodeit.net/dmitry.kalenyuk/practice/faker/';
+postController.getPosts();
+

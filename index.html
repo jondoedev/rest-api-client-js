@@ -18,40 +18,45 @@
 </header>
 <div class="container main-content">
     <div class="row col-md-8 col-md-offset-2">
-        <a href="#" class="btn btn-primary" id="addPostBtn" data-toggle="modal"
-           data-target="#postFormModal"><span class="glyphicon-plus"></span></a>
-        <button class="btn btn-success btnMore">More <span class="glyphicon glyphicon-download"></span></button>
-        <button class="btn btn-warning btnGenerate pull-right">Generate Data<span
-                class="glyphicon glyphicon-flash"></span></button>
+
         <div></div>
-            <table class="table table-bordered lazyLoad" id="postsTable">
-                <thead>
-                <tr>
-                    <th data-sort="created_at" class="text-center date">
-                        <span class="glyphicon glyphicon-sort-by-attributes-alt pull-right" aria-hidden="true"></span>
-                        Created at
-                        <span class="glyphicon glyphicon-sort-by-attributes pull-left" aria-hidden="true"></span>
-                    </th>
-                    <th data-sort="title" class="text-center">
-                        <span class="glyphicon glyphicon-sort-by-attributes-alt pull-right" aria-hidden="true"></span>
-                        Title
-                        <span class="glyphicon glyphicon-sort-by-attributes pull-left" aria-hidden="true"></span>
-                    </th>
-                    <th data-sort="content" class="text-center">
-                        Content
-                        <span class="glyphicon glyphicon-sort-by-attributes-alt pull-right" aria-hidden="true"></span>
-                        <span class="glyphicon glyphicon-sort-by-attributes pull-left" aria-hidden="true"></span>
-                    </th>
-                    <th data-sort="author" class="text-center">
-                        Author
-                        <span class="glyphicon glyphicon-sort-by-attributes-alt pull-right" aria-hidden="true"></span>
-                        <span class="glyphicon glyphicon-sort-by-attributes pull-left" aria-hidden="true"></span>
-                    </th>
-                    <th class="text-center"><span class="glyphicon glyphicon-cog"></span></th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <table class="table table-bordered table-fixed lazyLoad" id="postsTable">
+            <thead>
+            <tr>
+                <th data-sort="created_at" class="text-center date">
+                    <span class="glyphicon glyphicon-sort-by-attributes-alt pull-right" aria-hidden="true"></span>
+                    Created at
+                    <span class="glyphicon glyphicon-sort-by-attributes pull-left" aria-hidden="true"></span>
+                </th>
+                <th data-sort="title" class="text-center">
+                    <span class="glyphicon glyphicon-sort-by-attributes-alt pull-right" aria-hidden="true"></span>
+                    Title
+                    <span class="glyphicon glyphicon-sort-by-attributes pull-left" aria-hidden="true"></span>
+                </th>
+                <th data-sort="content" class="text-center">
+                    Content
+                    <span class="glyphicon glyphicon-sort-by-attributes-alt pull-right" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-sort-by-attributes pull-left" aria-hidden="true"></span>
+                </th>
+                <th data-sort="author" class="text-center">
+                    Author
+                    <span class="glyphicon glyphicon-sort-by-attributes-alt pull-right" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-sort-by-attributes pull-left" aria-hidden="true"></span>
+                </th>
+                <th class="text-center"><span class="glyphicon glyphicon-cog"></span></th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="controll-btns table-footer">
+            <button class="btn btn-primary pull-left" id="addPostBtn" data-toggle="modal"
+                    data-target="#postFormModal"><span class="glyphicon-plus"></span> Create Post</button>
+            <button class="btn btn-success btnMore">More <span class="glyphicon glyphicon-download"></span></button>
+            <button class="btn btn-success btnMoreSorted hidden">More Sorted<span
+                    class="glyphicon glyphicon-download"></span></button>
+            <button class="btn btn-warning btnGenerate pull-right">Generate Data<span
+                    class="glyphicon glyphicon-flash"></span></button>
+        </div>
     </div>
 </div>
 <div class="modal fade" tabindex="-1" role="dialog" id="postFormModal">
