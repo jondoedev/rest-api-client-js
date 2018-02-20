@@ -9,6 +9,7 @@
     <link rel="shortcut icon" href="img/favicon.ico">
     <link rel="stylesheet" href="src/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="src/css/table.css">
 </head>
 <body>
 <header>
@@ -20,7 +21,7 @@
     <div class="row col-md-8 col-md-offset-2">
 
         <div></div>
-        <table class="table table-bordered table-fixed lazyLoad" id="postsTable">
+        <table class="table table-bordered points_table lazyLoad" id="postsTable">
             <thead>
             <tr>
                 <th data-sort="created_at" class="text-center date">
@@ -46,7 +47,7 @@
                 <th class="text-center"><span class="glyphicon glyphicon-cog"></span></th>
             </tr>
             </thead>
-            <tbody></tbody>
+            <tbody class="points_table_scrollbar"></tbody>
         </table>
         <div class="controll-btns table-footer">
             <button class="btn btn-primary pull-left" id="addPostBtn" data-toggle="modal"
