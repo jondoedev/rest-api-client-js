@@ -323,7 +323,7 @@ function Helper() {
                 postCollection.setPosts(result);
             },
             error: function (xhr, resp, text) {
-                $('.btnMore').html('Thats All').prop("disabled", true);
+                $('.btnMoreSorted').html('Thats All').prop("disabled", true);
             }
         })
     };
@@ -337,14 +337,23 @@ function Helper() {
                 postCollection.setPosts(result);
             },
             error: function (xhr, resp, text) {
-                $('.btnMore').html('Thats All').prop("disabled", true);
+                $('.btnMoreSorted').html('Thats All').prop("disabled", true);
             }
         })
+    };
+        //check difference between dates with interval
+    this.checker = function () {
+        setInterval(function () {
+            $('.date').each(function () {
+                var id = $(this).parent('tr').data('id');
+                var post = postCollection.getPostById(id);
+                $(this).html(Helper.timeDiff(post.date));
+            })
+        }, 5000);
     }
 }
 /* End Helpers Code
  * ########################################################################################### */
-
 
 
 var postController = new PostController();
@@ -355,4 +364,5 @@ var limit = 10;
 const BASE_API_URL = 'http://dcodeit.net/dmitry.kalenyuk/projects/rest-api-codeit/public/posts';
 const FAKER_URL = 'http://dcodeit.net/dmitry.kalenyuk/practice/faker/';
 postController.getPosts();
+Helper.checker();
 
