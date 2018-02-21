@@ -7,6 +7,7 @@ function Post(id, title, content, author, unix_created_at) {
     this.author = author;
     this.date = unix_created_at;
 }
+
 /*End Post Entity code
  * ###########################################################################################  */
 
@@ -62,9 +63,6 @@ PostCollection.prototype.deletePost = function (id) {
 };
 /* End PostCollection Code
  * ########################################################################################### */
-
-
-
 
 
 /* PostController Code
@@ -157,7 +155,6 @@ function PostController() {
  * ########################################################################################### */
 
 
-
 /* Event Listeners
  * ########################################################################################### */
 
@@ -172,13 +169,13 @@ $('#postForm').on('submit', function (event) {
     }
 });
 
-    //delete event listener
+//delete event listener
 $(document).on('click', '.delBtn', function () {
     var id = $(this).closest("tr").data('id');
     postController.deletePost(id);
 });
 
-    //edit event listener
+//edit event listener
 $(document).on('click', '.editBtn', function () {
     var id = $(this).closest("tr").data('id');
     var post = postCollection.getPostById(id);
@@ -190,17 +187,17 @@ $(document).on('click', '.editBtn', function () {
 });
 
 
-    //lazy load event listener
+//lazy load event listener
 $('.btnMore').on('click', function () {
     Helper.lazyLoad();
 });
 
-    //generate data via PHP Faker
+//generate data via PHP Faker
 $('.btnGenerate').on('click', function () {
     Helper.generatePosts();
 });
 
-    //Sort ASC event listener
+//Sort ASC event listener
 $('.glyphicon-sort-by-attributes').on('click', function () {
     var column = $(this).closest('th').data('sort');
     $('.glyphicon').removeClass("glyphicon-active");
@@ -208,13 +205,14 @@ $('.glyphicon-sort-by-attributes').on('click', function () {
     $('.btnMore').html('More span').hide();
     $('.btnMoreSorted').html('More <span class="glyphicon glyphicon-download"></span>').removeClass('hidden');
     $('.btnMoreSorted').on('click', function () {
+        Helper.postTotalChecker();
         limit += 5;
         Helper.sortASC(column);
     });
     Helper.sortASC(column);
 });
 
-    //Sort DESC event listener
+//Sort DESC event listener
 $('.glyphicon-sort-by-attributes-alt').on('click', function () {
     var column = $(this).closest('th').data('sort');
     $('.glyphicon').removeClass("glyphicon-active");
@@ -222,6 +220,7 @@ $('.glyphicon-sort-by-attributes-alt').on('click', function () {
     $('.btnMore').html('More').hide();
     $('.btnMoreSorted').html('More <span class="glyphicon glyphicon-download"></span>').removeClass('hidden');
     $('.btnMoreSorted').on('click', function () {
+        Helper.postTotalChecker();
         limit += 5;
         Helper.sortDESC(column);
     });
@@ -237,6 +236,7 @@ function ViewController() {
     this.setTablePosts = function () {
         var posts = postCollection.getAllPosts();
         var length = posts.length;
+        rowCount = length;
 
         $('#postsTable tbody').empty();
 
@@ -261,9 +261,9 @@ function ViewController() {
         }
     };
 }
+
 /* End ViewController Code
  * ########################################################################################### */
-
 
 
 /* Helpers Code
@@ -305,10 +305,17 @@ function Helper() {
     this.lazyLoad = function () {
         $('.glyphicon').removeClass("glyphicon-active");
         limit += 5;
+        Helper.postTotalChecker();
         postCollection.clearPosts();
         postController.getPosts();
+        console.log('posts', postTotal);
+        if (rowCount >= postTotal) {
+            $('.btnMore').html('Thats All').prop("disabled", true);
+        }
     };
 
+        /*returns difference between current date
+            and post creation date */
     this.timeDiff = function (date) {
         return moment().from(date * 1000)
     };
@@ -321,11 +328,11 @@ function Helper() {
             type: 'GET',
             success: function (result) {
                 postCollection.setPosts(result);
-            },
-            error: function (xhr, resp, text) {
-                $('.btnMoreSorted').html('Thats All').prop("disabled", true);
             }
-        })
+        });
+        if (rowCount >= postTotal) {
+            $('.btnMoreSorted').html('Thats All').prop("disabled", true);
+        }
     };
 
     this.sortDESC = function (column) {
@@ -335,14 +342,14 @@ function Helper() {
             type: 'GET',
             success: function (result) {
                 postCollection.setPosts(result);
-            },
-            error: function (xhr, resp, text) {
-                $('.btnMoreSorted').html('Thats All').prop("disabled", true);
             }
-        })
+        });
+        if (rowCount >= postTotal) {
+            $('.btnMoreSorted').html('Thats All').prop("disabled", true);
+        }
     };
-        //check difference between dates with interval
-    this.checker = function () {
+    //check difference between dates with interval
+    this.dateChecker = function () {
         setInterval(function () {
             $('.date').each(function () {
                 var id = $(this).parent('tr').data('id');
@@ -350,8 +357,22 @@ function Helper() {
                 $(this).html(Helper.timeDiff(post.date));
             })
         }, 5000);
-    }
+    };
+
+    //get count of all posts from db
+    this.postTotalChecker = function () {
+        $.ajax({
+            url: 'http://dcodeit.net/dmitry.kalenyuk/projects/rest-api-codeit/public/total',
+            method: 'GET',
+            datatype: 'json',
+            success: function (data) {
+                var result = data.total;
+                postTotal = result;
+            }
+        });
+    };
 }
+
 /* End Helpers Code
  * ########################################################################################### */
 
@@ -360,9 +381,14 @@ var postController = new PostController();
 var postCollection = new PostCollection();
 var viewController = new ViewController();
 var Helper = new Helper();
+var rowCount;
+var postTotal;
+
 var limit = 10;
 const BASE_API_URL = 'http://dcodeit.net/dmitry.kalenyuk/projects/rest-api-codeit/public/posts';
 const FAKER_URL = 'http://dcodeit.net/dmitry.kalenyuk/practice/faker/';
 postController.getPosts();
-Helper.checker();
+Helper.dateChecker();
+Helper.postTotalChecker();
+
 
