@@ -89,8 +89,6 @@ function PostController() {
             type: 'POST',
             dataType: 'json',
             data: JSON.stringify(data),
-            username: 'root',
-            password: 'root',
             success: function (data) {
                 $('.modal').modal('hide');
                 $('#postForm').find("input[type=text]").val("");
@@ -237,9 +235,7 @@ function ViewController() {
         var posts = postCollection.getAllPosts();
         var length = posts.length;
         rowCount = length;
-
         $('#postsTable tbody').empty();
-
         for (var i = 0; i < length; i++) {
             $('#postsTable tbody').append(
                 '<tr data-id=' + posts[i].id + '>' +
@@ -304,18 +300,26 @@ function Helper() {
 
     this.lazyLoad = function () {
         $('.glyphicon').removeClass("glyphicon-active");
-        limit += 5;
+        Helper.postTotalChecker();
+        if (limit >= postTotal) {
+            limit = postTotal
+        } else {
+            limit += 5;
+        }
         Helper.postTotalChecker();
         postCollection.clearPosts();
         postController.getPosts();
         console.log('posts', postTotal);
         if (rowCount >= postTotal) {
             $('.btnMore').html('Thats All').prop("disabled", true);
+            var interval = setInterval(function () {
+                Helper.currentTotalChecker(interval);
+            }, 2500);
         }
     };
 
-        /*returns difference between current date
-            and post creation date */
+    /*returns difference between current date
+        and post creation date */
     this.timeDiff = function (date) {
         return moment().from(date * 1000)
     };
@@ -332,6 +336,9 @@ function Helper() {
         });
         if (rowCount >= postTotal) {
             $('.btnMoreSorted').html('Thats All').prop("disabled", true);
+            var interval = setInterval(function () {
+                Helper.currentTotalChecker(interval);
+            }, 2500);
         }
     };
 
@@ -346,6 +353,7 @@ function Helper() {
         });
         if (rowCount >= postTotal) {
             $('.btnMoreSorted').html('Thats All').prop("disabled", true);
+            //
         }
     };
     //check difference between dates with interval
@@ -371,6 +379,17 @@ function Helper() {
             }
         });
     };
+
+    this.currentTotalChecker = function (interval) {
+        Helper.postTotalChecker();
+        if (rowCount < postTotal) {
+            $('.btnMoreSorted').html('More <span class="glyphicon glyphicon-download').prop("disabled", false);
+            $('.btnMore').html('More <span class="glyphicon glyphicon-download').prop("disabled", false);
+            clearInterval(interval);
+        }
+        console.log('totalP', postTotal);
+        console.log('rowsP', rowCount);
+    };
 }
 
 /* End Helpers Code
@@ -389,6 +408,6 @@ const BASE_API_URL = 'http://dcodeit.net/dmitry.kalenyuk/projects/rest-api-codei
 const FAKER_URL = 'http://dcodeit.net/dmitry.kalenyuk/practice/faker/';
 postController.getPosts();
 Helper.dateChecker();
-Helper.postTotalChecker();
+// Helper.postTotalChecker();
 
 
