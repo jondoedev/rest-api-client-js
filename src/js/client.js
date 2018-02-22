@@ -95,6 +95,9 @@ function PostController() {
                 $('.glyphicon').removeClass("glyphicon-active");
                 postCollection.clearPosts();
                 postController.getPosts();
+                setTimeout(function () {
+                    Helper.postTotalChecker();
+                }, 500);
             },
             error: function (xhr) {
                 var errorObject = jQuery.parseJSON(xhr.responseText);
@@ -171,6 +174,9 @@ $('#postForm').on('submit', function (event) {
 $(document).on('click', '.delBtn', function () {
     var id = $(this).closest("tr").data('id');
     postController.deletePost(id);
+    setTimeout(function () {
+        Helper.postTotalChecker();
+    }, 500);
 });
 
 //edit event listener
@@ -298,24 +304,31 @@ function Helper() {
         })
     };
 
+    /*
+        As first step it will Check actual postTotal count,
+        and then checking values and adding more posts to a page
+     */
     this.lazyLoad = function () {
         $('.glyphicon').removeClass("glyphicon-active");
         Helper.postTotalChecker();
-        if (limit >= postTotal) {
-            limit = postTotal
-        } else {
-            limit += 5;
-        }
-        Helper.postTotalChecker();
-        postCollection.clearPosts();
-        postController.getPosts();
-        console.log('posts', postTotal);
-        if (rowCount >= postTotal) {
-            $('.btnMore').html('Thats All').prop("disabled", true);
-            var interval = setInterval(function () {
-                Helper.currentTotalChecker(interval);
-            }, 2500);
-        }
+        setTimeout(function () {
+            if (limit >= postTotal) {
+                limit = postTotal
+                console.log('lazyTOtal', postTotal);
+            } else {
+                limit += 5;
+            }
+            postCollection.clearPosts();
+            postController.getPosts();
+
+            if (rowCount >= postTotal) {
+                $('.btnMore').html('Thats All').prop("disabled", true);
+                var interval = setInterval(function () {
+                    Helper.currentTotalChecker(interval);
+                }, 2500);
+            }
+        }, 250);
+
     };
 
     /*returns difference between current date
@@ -387,8 +400,8 @@ function Helper() {
             $('.btnMore').html('More <span class="glyphicon glyphicon-download').prop("disabled", false);
             clearInterval(interval);
         }
-        console.log('totalP', postTotal);
-        console.log('rowsP', rowCount);
+        console.log('total count of posts in db', postTotal);
+        console.log('post shown', rowCount);
     };
 }
 
