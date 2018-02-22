@@ -96,7 +96,7 @@ function PostController() {
                 postCollection.clearPosts();
                 postController.getPosts();
                 setTimeout(function () {
-                    Helper.postTotalChecker();
+                    Helper.currentTotalChecker();
                 }, 500);
             },
             error: function (xhr) {
@@ -209,8 +209,14 @@ $('.glyphicon-sort-by-attributes').on('click', function () {
     $('.btnMore').html('More span').hide();
     $('.btnMoreSorted').html('More <span class="glyphicon glyphicon-download"></span>').removeClass('hidden');
     $('.btnMoreSorted').on('click', function () {
-        Helper.postTotalChecker();
-        limit += 5;
+        Helper.currentTotalChecker();
+        setTimeout(function () {
+            if (limit >= postTotal) {
+                limit = postTotal;
+            } else {
+                limit += 5;
+            }
+        }, 250);
         Helper.sortASC(column);
     });
     Helper.sortASC(column);
@@ -225,7 +231,13 @@ $('.glyphicon-sort-by-attributes-alt').on('click', function () {
     $('.btnMoreSorted').html('More <span class="glyphicon glyphicon-download"></span>').removeClass('hidden');
     $('.btnMoreSorted').on('click', function () {
         Helper.postTotalChecker();
-        limit += 5;
+        setTimeout(function () {
+            if (limit >= postTotal) {
+                limit = postTotal;
+            } else {
+                limit += 5;
+            }
+        }, 500);
         Helper.sortDESC(column);
     });
     Helper.sortDESC(column);
@@ -366,7 +378,9 @@ function Helper() {
         });
         if (rowCount >= postTotal) {
             $('.btnMoreSorted').html('Thats All').prop("disabled", true);
-            //
+            var interval = setInterval(function () {
+                Helper.currentTotalChecker(interval);
+            }, 2500);
         }
     };
     //check difference between dates with interval
