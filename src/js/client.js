@@ -69,8 +69,12 @@ PostCollection.prototype.deletePost = function (id) {
  * ########################################################################################### */
 function PostController() {
     this.getPosts = function () {
+        this.url = BASE_API_URL + '?offset=' + offset + sorting;
+        if (sorting === undefined){
+            this.url = BASE_API_URL + '?offset=' + offset
+        }
         $.ajax({
-            url: BASE_API_URL + '?offset=' + offset,
+            url: this.url,
             type: 'GET',
             success: function (data) {
                 var posts = data.response;
@@ -201,52 +205,26 @@ $('.btnGenerate').on('click', function () {
 
 //Sort ASC event listener
 $('.glyphicon-sort-by-attributes').on('click', function () {
-    $('.btnMoreSorted').html('Thats All').prop("disabled", false);
+    $('.btnMore').html('More').prop("disabled", false);
     offset = 0;
     var column = $(this).closest('th').data('sort');
     $('.glyphicon').removeClass("glyphicon-active");
     $(this).addClass("glyphicon-active");
-    $('.btnMore').html('More span').hide();
-    $('.btnMoreSorted').html('More <span class="glyphicon glyphicon-download"></span>').removeClass('hidden');
-
-    $('.btnMoreSorted').on('click', function () {
-        if (offset +10 >= postTotal) {
-            offset = postTotal;
-        } else {
-            offset += 10;
-        }
-        if (rowCount = postTotal){
-            $('.btnMoreSorted').html('Thats All').prop("disabled", true);
-        }
-        Helper.sortASC(column);
-
-    });
+    sorting = '&column=' + column + '&option=ASC';
     postCollection.clearPosts();
-    Helper.sortASC(column);
+    postController.getPosts();
 });
 
 //Sort DESC event listener
 $('.glyphicon-sort-by-attributes-alt').on('click', function () {
-    $('.btnMoreSorted').html('Thats All').prop("disabled", false);
+    $('.btnMore').html('More').prop("disabled", false);
     offset = 0;
     var column = $(this).closest('th').data('sort');
     $('.glyphicon').removeClass("glyphicon-active");
     $(this).addClass("glyphicon-active");
-    $('.btnMore').html('More').hide();
-    $('.btnMoreSorted').html('More <span class="glyphicon glyphicon-download"></span>').removeClass('hidden');
-    $('.btnMoreSorted').on('click', function () {
-            if (offset +10 >= postTotal) {
-                offset = postTotal;
-            } else {
-                offset += 10;
-            }
-        if (rowCount = postTotal){
-            $('.btnMore').html('Thats All').prop("disabled", true);
-        }
-        Helper.sortDESC(column);
-    });
+    sorting = '&column=' + column + '&option=DESC';
     postCollection.clearPosts();
-    Helper.sortDESC(column);
+    postController.getPosts();
 });
 /* End Event Listeners
  * ########################################################################################### */
@@ -327,14 +305,10 @@ function Helper() {
 
     this.lazyLoad = function () {
         $('.glyphicon').removeClass("glyphicon-active");
-        // offset += 10;
-        if (offset+10 >= postTotal) {
+        if (offset >= postTotal) {
             offset = postTotal;
         } else {
-            offset += 10;
-        }
-        if (rowCount = postTotal){
-            $('.btnMore').html('Thats All').prop("disabled", true);
+            offset += 5;
         }
         postController.getPosts();
     };
@@ -345,40 +319,6 @@ function Helper() {
         return moment().from(date * 1000)
     };
 
-
-    this.sortASC = function (column) {
-        $.ajax({
-            url: BASE_API_URL + '?column=' + column + '&option=ASC&offset=' + offset,
-            type: 'GET',
-            success: function (data) {
-                var posts = data.response;
-                postTotal = data.total;
-                postCollection.setPosts(posts);
-
-            },
-            error: function (xhr, resp, text) {
-                $('.btnMoreSorted').html('Thats All').prop("disabled", true);
-            }
-        });
-
-    };
-
-    this.sortDESC = function (column) {
-        $.ajax({
-            url: BASE_API_URL + '?column=' + column + '&option=DESC&offset=' + offset,
-            type: 'GET',
-            success: function (data) {
-                var posts = data.response;
-                postTotal = data.total;
-                postCollection.setPosts(posts);
-
-            },
-            error: function (xhr, resp, text) {
-                $('.btnMoreSorted').html('Thats All').prop("disabled", true);
-            }
-        });
-
-    };
     //check difference between dates with interval
     this.dateChecker = function () {
         setInterval(function () {
@@ -402,6 +342,7 @@ var viewController = new ViewController();
 var Helper = new Helper();
 var rowCount;
 var postTotal;
+var sorting;
 
 var limit = 10;
 var offset = 0;
@@ -409,5 +350,5 @@ const BASE_API_URL = 'http://dcodeit.net/dmitry.kalenyuk/projects/rest-api-codei
 const FAKER_URL = 'http://dcodeit.net/dmitry.kalenyuk/practice/faker/';
 postController.getPosts();
 Helper.dateChecker();
-// Helper.postTotalChecker();
+
 
